@@ -8,7 +8,6 @@ import 'package:vcet_connect/components/general/footer.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Implement security features similar to your React app
   _setupSecurityFeatures();
 
   final authService = AuthService();
@@ -18,16 +17,10 @@ void main() {
 }
 
 void _setupSecurityFeatures() {
-  // Flutter doesn't need most of the web security features from your React app
-  // as they don't apply in the same way, but we can implement some similar protections
-
-  // Prevent screenshots in release mode (Android only)
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
     overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
   );
-
-  // You could add other security features here
 }
 
 class MyApp extends StatelessWidget {
@@ -46,15 +39,12 @@ class MyApp extends StatelessWidget {
       routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
-        // This is where you could add global UI elements
-        // similar to the AppWrapper in your React code
         return child!;
       },
     );
   }
 }
 
-// You'll also need a root widget that handles showing/hiding Navbar and Footer
 class AppShell extends StatelessWidget {
   final Widget child;
   final String currentPath;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vcet_connect/routes/route_names.dart';
 
 import 'package:vcet_connect/pages/home_page.dart';
 import 'package:vcet_connect/pages/super_admin.dart';
@@ -23,75 +24,89 @@ class AppRouter {
   AppRouter(this.authService);
 
   late final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: RouteNames.home,
     debugLogDiagnostics: true,
     redirect: _handleRedirect,
     routes: [
       // Public routes
       GoRoute(
-        path: '/',
+        path: RouteNames.home,
+        name: 'home',
         builder: (context, state) => const HomePage(),
       ),
       GoRoute(
-        path: '/know-about-us',
+        path: RouteNames.about,
+        name: 'about',
         builder: (context, state) => const About(),
       ),
       GoRoute(
-        path: '/hidden/changeMailTiming',
+        path: RouteNames.mailTiming,
+        name: 'mailTiming',
         builder: (context, state) => const MailTiming(),
       ),
       GoRoute(
-        path: '/wardDetails',
+        path: RouteNames.wardDetails,
+        name: 'wardDetails',
         builder: (context, state) => const WardDetails(),
       ),
       GoRoute(
-        path: '/superadmin',
+        path: RouteNames.superAdmin,
+        name: 'superAdmin',
         builder: (context, state) => const SuperAdmin(),
       ),
 
       // Auth routes
       GoRoute(
-        path: '/signin',
+        path: RouteNames.signIn,
+        name: 'signIn',
         builder: (context, state) => const SignIn(),
       ),
       GoRoute(
-        path: '/forgotpassword',
+        path: RouteNames.forgotPassword,
+        name: 'forgotPassword',
         builder: (context, state) => const ForgotPassword(),
       ),
 
       // Protected student routes
       GoRoute(
-        path: '/studentdashboard',
+        path: RouteNames.studentDashboard,
+        name: 'studentDashboard',
         builder: (context, state) => const DashBoard(),
       ),
       GoRoute(
-        path: '/profile',
+        path: RouteNames.profile,
+        name: 'profile',
         builder: (context, state) => const ProfilePage(),
       ),
       GoRoute(
-        path: '/leaverequest',
+        path: RouteNames.leaveRequest,
+        name: 'leaveRequest',
         builder: (context, state) => const LeaveRequestForm(),
       ),
       GoRoute(
-        path: '/bonafiedrequest',
+        path: RouteNames.bonafiedRequest,
+        name: 'bonafiedRequest',
         builder: (context, state) => const BonafiedRequestForm(),
       ),
 
       // HOD routes
       GoRoute(
-        path: '/hoddash',
+        path: RouteNames.hodDashboard,
+        name: 'hodDashboard',
         builder: (context, state) => const HodDashboard(),
       ),
 
       // Staff routes
       GoRoute(
-        path: '/staffdashboard',
+        path: RouteNames.staffDashboard,
+        name: 'staffDashboard',
         builder: (context, state) => const StaffDashBoard(),
       ),
 
       // 404 route - must be last
       GoRoute(
-        path: '/:path(.*)',
+        path: RouteNames.notFound,
+        name: 'notFound',
         builder: (context, state) => const PageNotFound(),
       ),
     ],
@@ -103,60 +118,60 @@ class AppRouter {
     final isHod = authService.isHod;
     final isStaff = authService.isStaff;
     final isStudent = authService.isStudent;
-    final isGoingToLogin =
-        currentPath == '/signin' || currentPath == '/forgotpassword';
+    final isGoingToLogin = currentPath == RouteNames.signIn ||
+        currentPath == RouteNames.forgotPassword;
 
     // List of pages that don't need authentication
     final publicPages = [
-      '/',
-      '/know-about-us',
-      '/wardDetails',
-      '/hidden/changeMailTiming',
-      '/superadmin',
-      '/signin',
-      '/forgotpassword'
+      RouteNames.home,
+      RouteNames.about,
+      RouteNames.wardDetails,
+      RouteNames.mailTiming,
+      RouteNames.superAdmin,
+      RouteNames.signIn,
+      RouteNames.forgotPassword,
     ];
 
     // List of dashboard pages (for Navbar/Footer logic)
     final dashboardPages = [
-      '/profile',
-      '/staffdashboard',
-      '/hoddash',
-      '/superadmin'
+      RouteNames.profile,
+      RouteNames.staffDashboard,
+      RouteNames.hodDashboard,
+      RouteNames.superAdmin,
     ];
 
     // If user is not logged in and trying to access protected route
     if (!isLoggedIn && !publicPages.contains(currentPath)) {
-      return '/signin';
+      return RouteNames.signIn;
     }
 
     // If user is logged in and trying to access login page
     if (isLoggedIn && isGoingToLogin) {
-      if (isStudent) return '/studentdashboard';
-      if (isHod) return '/hoddash';
-      if (isStaff) return '/staffdashboard';
+      if (isStudent) return RouteNames.studentDashboard;
+      if (isHod) return RouteNames.hodDashboard;
+      if (isStaff) return RouteNames.staffDashboard;
     }
 
     // Role-based access control
     if (isLoggedIn) {
       // HOD-only routes
-      if (currentPath == '/hoddash' && !isHod) {
-        return '/';
+      if (currentPath == RouteNames.hodDashboard && !isHod) {
+        return RouteNames.home;
       }
 
       // Staff-only routes
-      if (currentPath == '/staffdashboard' && !isStaff) {
-        return '/';
+      if (currentPath == RouteNames.staffDashboard && !isStaff) {
+        return RouteNames.home;
       }
 
       // Student-only routes
       final studentRoutes = [
-        '/studentdashboard',
-        '/leaverequest',
-        '/bonafiedrequest'
+        RouteNames.studentDashboard,
+        RouteNames.leaveRequest,
+        RouteNames.bonafiedRequest,
       ];
       if (studentRoutes.contains(currentPath) && !isStudent) {
-        return '/';
+        return RouteNames.home;
       }
     }
 
@@ -167,10 +182,10 @@ class AppRouter {
   // Helper method to determine if navbar should be shown
   bool shouldShowNavbar(String currentPath) {
     final dashboardPages = [
-      '/profile',
-      '/staffdashboard',
-      '/hoddash',
-      '/superadmin'
+      RouteNames.profile,
+      RouteNames.staffDashboard,
+      RouteNames.hodDashboard,
+      RouteNames.superAdmin,
     ];
     return !dashboardPages.contains(currentPath);
   }
@@ -178,11 +193,11 @@ class AppRouter {
   // Helper method to determine if footer should be shown
   bool shouldShowFooter(String currentPath) {
     final footerPages = [
-      '/',
+      RouteNames.home,
       '/studentsignup',
       '/staffsignup',
-      '/signin',
-      '/wardDetails'
+      RouteNames.signIn,
+      RouteNames.wardDetails,
     ];
     return footerPages.contains(currentPath) || currentPath.contains('/*');
   }

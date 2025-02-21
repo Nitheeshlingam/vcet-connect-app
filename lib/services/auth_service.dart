@@ -1,5 +1,4 @@
 class AuthService {
-  // This is a simplified version - you'll need to implement actual authentication logic
   bool _isAuthenticated = false;
   String? _userRole;
   String? _userId;
@@ -11,10 +10,6 @@ class AuthService {
   String? get userId => _userId;
 
   Future<bool> signIn(String email, String password) async {
-    // Implement actual authentication logic here
-    // This would typically involve API calls
-
-    // Placeholder for demonstration
     if (email.contains('hod')) {
       _userRole = 'hod';
       _isAuthenticated = true;
@@ -37,15 +32,12 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    // Implement sign out logic here
     _isAuthenticated = false;
     _userRole = null;
     _userId = null;
   }
 
-  // Add other auth-related methods as needed
   Future<bool> resetPassword(String email) async {
-    // Implement password reset logic
     return true;
   }
 }
