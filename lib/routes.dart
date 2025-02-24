@@ -23,7 +23,7 @@ class AppRouter {
   AppRouter(this.authService);
 
   late final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/signin',
     debugLogDiagnostics: true,
     redirect: _handleRedirect,
     routes: [
