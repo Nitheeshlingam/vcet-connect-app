@@ -24,6 +24,7 @@ class _SignInState extends State<SignIn> {
 
     String identifier = rollNoController.text.toString();
     String password = passwordController.text.toString();
+    print("Sending Data: identifier = $identifier, password = $password");
 
     UserModel? user = await apiService.studentSignin(identifier, password);
     setState(() {
@@ -136,12 +137,13 @@ class _SignInState extends State<SignIn> {
                                   'Enter Roll number' : 
                                   'Enter Staff Id',
                                    Icons.person_outline_sharp, 
-                                   rollNoController
+                                   rollNoController,
+                                   false
                                 ),
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                inputText('Enter Password', Icons.lock_outline, passwordController),
+                                inputText('Enter Password', Icons.lock_outline, passwordController, true),
                                 SizedBox(
                                   height: 20.0,
                                 ),
@@ -185,8 +187,10 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  TextField inputText(String label, IconData icon, TextEditingController controller) {
+  TextField inputText(String label, IconData icon, TextEditingController controller, bool isPassword) {
     return TextField(
+      obscureText: isPassword,
+      controller: controller,
       decoration: InputDecoration(
       labelText: label,
       prefixIcon: Icon(icon),
