@@ -33,7 +33,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       token: json['token']?.toString() ?? "",
-      id: json['id']?.toString() ?? "", 
+      id: json['id']?.toString() ?? "",
       name: json['name']?.toString() ?? "Unknown",
       rollNo: json['roll_no']?.toString() ?? "",
       registerNo: json['register_no']?.toString() ?? "",
@@ -47,5 +47,24 @@ class UserModel {
       sectionName: json['section_name']?.toString() ?? "",
       userType: json['userType']?.toString() ?? "Unknown",
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "token": token,
+      "id": id,
+      "name": name,
+      "rollNo": rollNo,
+      "registerNo": registerNo,
+      "email": email,
+      "phone": phone,
+      "parentPhone": parentPhone,
+      "departmentId": departmentId,
+      "mentorId": mentorId,
+      "batchId": batchId,
+      "sectionId": sectionId,
+      "sectionName": sectionName,
+      "userType": userType
+    };
   }
 }

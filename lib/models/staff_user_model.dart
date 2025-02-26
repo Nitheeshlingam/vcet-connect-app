@@ -44,17 +44,41 @@ class StaffModel {
       staffHandleSection: json['staffHandleSection']?.toString(),
       staffHandleDept: json['staffHandleDept']?.toString(),
       staffRole: json['staffRole']?.toString(),
-      isHod: json['isHod'] ?? false, 
-      isMentor: json['isMentor'] ?? false, 
+      isHod: json['isHod'] ?? false,
+      isMentor: json['isMentor'] ?? false,
       classInchargeBatchId: json['classInchargeBatchId']?.toString(),
       classInchargeSectionId: json['classInchargeSectionId']?.toString(),
-      numberOfClassesHandledAsMentor: json['numberOfClassesHandledAsMentor'] as int? ?? 0,  
+      numberOfClassesHandledAsMentor:
+          json['numberOfClassesHandledAsMentor'] as int? ?? 0,
       mentorHandlingData: (json['mentorHandlingData'] as List<dynamic>?)
-          ?.map((data) => MentorHandlingData.fromJson(data))
-          .toList() ?? [],  
-      password: json['password'].toString(),  
-      userType: json['userType']?.toString() ?? 'staff',  
+              ?.map((data) => MentorHandlingData.fromJson(data))
+              .toList() ??
+          [],
+      password: json['password'].toString(),
+      userType: json['userType']?.toString() ?? 'staff',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'staffId': staffId,
+      'staffName': staffName,
+      'staffMail': staffMail,
+      'staffPhone': staffPhone,
+      'staffHandleBatch': staffHandleBatch,
+      'staffHandleSection': staffHandleSection,
+      'staffHandleDept': staffHandleDept,
+      'staffRole': staffRole,
+      'isHod': isHod,
+      'isMentor': isMentor,
+      'classInchargeBatchId': classInchargeBatchId,
+      'classInchargeSectionId': classInchargeSectionId,
+      'numberOfClassesHandledAsMentor': numberOfClassesHandledAsMentor,
+      'mentorHandlingData':
+          mentorHandlingData?.map((data) => data.toJson()).toList(),
+      'password': password,
+      'userType': userType,
+    };
   }
 }
 
@@ -69,5 +93,12 @@ class MentorHandlingData {
     return MentorHandlingData(
         handlingBatchId: json['handlingBatchId']?.toString(),
         handlingSectionId: json['handlingSectionId']?.toString());
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'handlingBatchId': handlingBatchId,
+      'handlingSectionId': handlingSectionId
+    };
   }
 }

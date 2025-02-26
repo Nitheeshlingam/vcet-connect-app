@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:vcet_connect/models/staff_user_model.dart';
 import 'package:vcet_connect/models/user_model.dart';
 import 'package:vcet_connect/services/api_service.dart';
 
@@ -16,24 +21,54 @@ class _SignInState extends State<SignIn> {
 
   bool isStudent = false;
   bool isLoading = false;
+  var sessionManager = SessionManager();
 
-  void login() async {
+  void setLoader() {
     setState(() {
       isLoading = true;
     });
+  }
 
-    String identifier = rollNoController.text.toString();
-    String password = passwordController.text.toString();
-    print("Sending Data: identifier = $identifier, password = $password");
-
-    UserModel? user = await apiService.studentSignin(identifier, password);
+  void removeLoader() {
     setState(() {
       isLoading = false;
     });
-    if (user != null) {
-      showCustomSnackBar(context, 'Login successfully -${user.name}', Colors.green);
-    } else {
-      showCustomSnackBar(context, 'Login failed', Colors.red);
+  }
+
+  void login() async {
+    setLoader();
+
+    String identifier = rollNoController.text.toString();
+    String password = passwordController.text.toString();
+
+    try {
+      if (isStudent) {
+        UserModel? student =
+            await apiService.studentSignin(identifier, password);
+        if (student != null) {
+          String? studentModelString = jsonEncode(student.toJson());
+          await sessionManager.set("student_data", studentModelString);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/studentdashboard');
+        } else {
+          print('Value varala da');
+        }
+      } else {
+        StaffModel? staff = await apiService.staffSignin(identifier, password);
+        if (staff != null) {
+          String? staffModelString = jsonEncode(staff.toJson());
+          await sessionManager.set("staff_data", staffModelString);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/staffdashboard');
+        } else {
+          print('Value varala da');
+        }
+      }
+    } on DioException catch (e) {
+      print('Error in Login: $e');
+      return null;
+    } finally {
+      removeLoader();
     }
   }
 
@@ -103,9 +138,7 @@ class _SignInState extends State<SignIn> {
                                   child: inputField(
                                       'assets/images/student_icon.png',
                                       'Student',
-                                      isStudent
-                                          ? Colors.blue
-                                          : Colors.black)),
+                                      isStudent ? Colors.blue : Colors.black)),
                               SizedBox(
                                 width: 40.0,
                               ),
@@ -118,9 +151,7 @@ class _SignInState extends State<SignIn> {
                                   child: inputField(
                                       'assets/images/staff_icon.png',
                                       'Staff',
-                                      !isStudent
-                                          ? Colors.blue
-                                          : Colors.black))
+                                      !isStudent ? Colors.blue : Colors.black))
                             ],
                           ),
                         ),
@@ -133,33 +164,36 @@ class _SignInState extends State<SignIn> {
                             child: Column(
                               children: [
                                 inputText(
-                                  isStudent? 
-                                  'Enter Roll number' : 
-                                  'Enter Staff Id',
-                                   Icons.person_outline_sharp, 
-                                   rollNoController,
-                                   false
-                                ),
+                                    isStudent
+                                        ? 'Enter Roll number'
+                                        : 'Enter Staff Id',
+                                    Icons.person_outline_sharp,
+                                    rollNoController,
+                                    false),
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                inputText('Enter Password', Icons.lock_outline, passwordController, true),
+                                inputText('Enter Password', Icons.lock_outline,
+                                    passwordController, true),
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                isLoading? 
-                                Center(child: CircularProgressIndicator(),)
-                                : ElevatedButton(
-                                    onPressed: login,
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12.0))),
-                                    child: Center(
-                                      child: Text('Sign In'),
-                                    )),
+                                isLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : ElevatedButton(
+                                        onPressed: login,
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        12.0))),
+                                        child: Center(
+                                          child: Text('Sign In'),
+                                        )),
                                 SizedBox(
                                   height: 20.0,
                                 ),
@@ -187,29 +221,30 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  TextField inputText(String label, IconData icon, TextEditingController controller, bool isPassword) {
+  TextField inputText(String label, IconData icon,
+      TextEditingController controller, bool isPassword) {
     return TextField(
-      obscureText: isPassword,
-      controller: controller,
-      decoration: InputDecoration(
-      labelText: label,
-      prefixIcon: Icon(icon),
-      border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.black, width: 2.0)),
-      enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.black, width: 2.0)),
-      focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.blue, width: 2.0)),
-      errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.red, width: 2.0)),
-      focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.deepOrange, width: 2.0)),
-    ));
+        obscureText: isPassword,
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.black, width: 2.0)),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.black, width: 2.0)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.blue, width: 2.0)),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.red, width: 2.0)),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(color: Colors.deepOrange, width: 2.0)),
+        ));
   }
 
   Widget inputField(String imagePath, String role, Color color) {
