@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:vcet_connect/routes.dart';
+import 'package:vcet_connect/routes/routes.dart';
 import 'package:vcet_connect/services/auth_service.dart';
 import 'package:vcet_connect/components/general/navbar.dart';
 import 'package:vcet_connect/components/general/footer.dart';
@@ -8,19 +7,10 @@ import 'package:vcet_connect/components/general/footer.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  _setupSecurityFeatures();
-
   final authService = AuthService();
   final appRouter = AppRouter(authService);
 
   runApp(MyApp(appRouter: appRouter));
-}
-
-void _setupSecurityFeatures() {
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-  );
 }
 
 class MyApp extends StatelessWidget {
@@ -31,9 +21,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Your App Name',
+      title: 'Vcet_connect',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.white, // ✅ Set primary color to White
+        scaffoldBackgroundColor:
+            Colors.white, // ✅ Ensure all pages have a white background
+        colorScheme: ColorScheme.light(
+          primary: Colors.white, // ✅ Primary color White
+          secondary: Colors.blue, // ✅ Secondary color Blue
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routerConfig: appRouter.router,
@@ -41,40 +37,6 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return child!;
       },
-    );
-  }
-}
-
-class AppShell extends StatelessWidget {
-  final Widget child;
-  final String currentPath;
-  final AppRouter router;
-
-  const AppShell({
-    Key? key,
-    required this.child,
-    required this.currentPath,
-    required this.router,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final showNavbar = router.shouldShowNavbar(currentPath);
-    final showFooter = router.shouldShowFooter(currentPath);
-
-    return Scaffold(
-      appBar: showNavbar
-          ? const PreferredSize(
-              preferredSize: Size.fromHeight(56),
-              child: Navbar(),
-            )
-          : null,
-      body: Column(
-        children: [
-          Expanded(child: child),
-          if (showFooter) const Footer(),
-        ],
-      ),
     );
   }
 }
