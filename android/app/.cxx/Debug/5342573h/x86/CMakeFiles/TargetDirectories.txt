@@ -1,0 +1,2 @@
+C:/Users/dines/VS Projects/Vcet Connect/vcet_connect/android/app/.cxx/Debug/5342573h/x86/CMakeFiles/edit_cache.dir
+C:/Users/dines/VS Projects/Vcet Connect/vcet_connect/android/app/.cxx/Debug/5342573h/x86/CMakeFiles/rebuild_cache.dir

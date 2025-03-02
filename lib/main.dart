@@ -23,14 +23,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Vcet_connect',
       theme: ThemeData(
-        primaryColor: Colors.white, // ✅ Set primary color to White
-        scaffoldBackgroundColor:
-            Colors.white, // ✅ Ensure all pages have a white background
+        primaryColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.light(
-          primary: Colors.white, // ✅ Primary color White
-          secondary: Colors.blue, // ✅ Secondary color Blue
+          primary: Colors.white,
+          secondary: Colors.blue,
         ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routerConfig: appRouter.router,
       debugShowCheckedModeBanner: false,

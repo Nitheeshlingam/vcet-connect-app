@@ -37,7 +37,7 @@ class AppRouter {
       GoRoute(
         path: RouteNames.about,
         name: 'about',
-        builder: (context, state) => const About(),
+        builder: (context, state) => About(),
       ),
       GoRoute(
         path: RouteNames.mailTiming,
